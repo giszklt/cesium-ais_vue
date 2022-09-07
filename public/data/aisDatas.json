@@ -1,0 +1,386 @@
+{
+	"displayFieldName": "",
+	"fieldAliases": {
+		"FID": "FID",
+		"name": "name",
+		"ORIG_FID": "ORIG_FID",
+		"lonlat": "lonlat",
+		"heading": "heading",
+		"speed": "speed",
+		"type": "type",
+		"time": "time"
+	},
+	"geometryType": "esriGeometryPoint",
+	"spatialReference": {
+		"wkid": 4326,
+		"latestWkid": 4326
+	},
+	"fields": [
+		{
+			"name": "FID",
+			"type": "esriFieldTypeOID",
+			"alias": "FID"
+		},
+		{
+			"name": "name",
+			"type": "esriFieldTypeString",
+			"alias": "name",
+			"length": 80
+		},
+		{
+			"name": "ORIG_FID",
+			"type": "esriFieldTypeInteger",
+			"alias": "ORIG_FID"
+		},
+		{
+			"name": "lonlat",
+			"type": "esriFieldTypeString",
+			"alias": "lonlat",
+			"length": 50
+		},
+		{
+			"name": "heading",
+			"type": "esriFieldTypeSingle",
+			"alias": "heading"
+		},
+		{
+			"name": "speed",
+			"type": "esriFieldTypeSingle",
+			"alias": "speed"
+		},
+		{
+			"name": "type",
+			"type": "esriFieldTypeString",
+			"alias": "type",
+			"length": 50
+		},
+		{
+			"name": "time",
+			"type": "esriFieldTypeString",
+			"alias": "time",
+			"length": 50
+		}
+	],
+	"features": [
+		{
+			"attributes": {
+				"FID": 0,
+				"name": "和谐号A2",
+				"ORIG_FID": 0,
+				"lonlat": "111.684906,21.101771",
+				"heading": 350.28,
+				"speed": 38.2314,
+				"type": "A2",
+				"time": "2022-08-22 12:12:12"
+			},
+			"geometry": {
+				"x": 111.68490592124999,
+				"y": 21.10177066359374
+			}
+		},
+		{
+			"attributes": {
+				"FID": 1,
+				"name": "和谐号A2",
+				"ORIG_FID": 0,
+				"lonlat": "113.706390,20.574427",
+				"heading": 13.42,
+				"speed": 50.8812,
+				"type": "A2",
+				"time": "2022-08-22 13:12:12"
+			},
+			"geometry": {
+				"x": 113.70639029624999,
+				"y": 20.57442691359374
+			}
+		},
+		{
+			"attributes": {
+				"FID": 2,
+				"name": "和谐号A2",
+				"ORIG_FID": 0,
+				"lonlat": "115.881683,20.969935",
+				"heading": 38.38,
+				"speed": 52.8548,
+				"type": "A2",
+				"time": "2022-08-22 14:12:12"
+			},
+			"geometry": {
+				"x": 115.88168326499999,
+				"y": 20.96993472609374
+			}
+		},
+		{
+			"attributes": {
+				"FID": 3,
+				"name": "和谐号A2",
+				"ORIG_FID": 0,
+				"lonlat": "116.958343,22.156458",
+				"heading": 54.26,
+				"speed": 42.1868,
+				"type": "A2",
+				"time": "2022-08-22 15:12:12"
+			},
+			"geometry": {
+				"x": 116.95834342124999,
+				"y": 22.15645816359374
+			}
+		},
+		{
+			"attributes": {
+				"FID": 4,
+				"name": "和谐号B2",
+				"ORIG_FID": 1,
+				"lonlat": "113.662445,21.651087",
+				"heading": 354.12,
+				"speed": 36.2218,
+				"type": "融合",
+				"time": "2022-08-22 12:26:26"
+			},
+			"geometry": {
+				"x": 113.66244498374999,
+				"y": 21.65108706984374
+			}
+		},
+		{
+			"attributes": {
+				"FID": 5,
+				"name": "和谐号B2",
+				"ORIG_FID": 1,
+				"lonlat": "117.309906,21.453333",
+				"heading": 4.26,
+				"speed": 45.3321,
+				"type": "融合",
+				"time": "2022-08-22 13:26:26"
+			},
+			"geometry": {
+				"x": 117.30990592124999,
+				"y": 21.45333316359374
+			}
+		},
+		{
+			"attributes": {
+				"FID": 6,
+				"name": "和谐号B2",
+				"ORIG_FID": 1,
+				"lonlat": "119.836761,21.563196",
+				"heading": 351.26,
+				"speed": 48.3328,
+				"type": "融合",
+				"time": "2022-08-22 14:26:26"
+			},
+			"geometry": {
+				"x": 119.83676138999999,
+				"y": 21.56319644484374
+			}
+		},
+		{
+			"attributes": {
+				"FID": 7,
+				"name": "和谐号B2",
+				"ORIG_FID": 1,
+				"lonlat": "121.814300,20.794153",
+				"heading": 348.42,
+				"speed": 38.8216,
+				"type": "融合",
+				"time": "2022-08-22 15:26:26"
+			},
+			"geometry": {
+				"x": 121.81430045249999,
+				"y": 20.79415347609374
+			}
+		},
+		{
+			"attributes": {
+				"FID": 8,
+				"name": "和谐号C2",
+				"ORIG_FID": 2,
+				"lonlat": "111.860687,20.574427",
+				"heading": 351.18,
+				"speed": 36.1288,
+				"type": "C2",
+				"time": "2022-08-22 12:33:33"
+			},
+			"geometry": {
+				"x": 111.86068717124999,
+				"y": 20.57442691359374
+			}
+		},
+		{
+			"attributes": {
+				"FID": 9,
+				"name": "和谐号C2",
+				"ORIG_FID": 2,
+				"lonlat": "115.112640,19.300013",
+				"heading": 342.46,
+				"speed": 54.2138,
+				"type": "C2",
+				"time": "2022-08-22 13:33:33"
+			},
+			"geometry": {
+				"x": 115.11264029624999,
+				"y": 19.30001285109374
+			}
+		},
+		{
+			"attributes": {
+				"FID": 10,
+				"name": "和谐号C2",
+				"ORIG_FID": 2,
+				"lonlat": "117.375824,17.212611",
+				"heading": 354.24,
+				"speed": 53.3399,
+				"type": "C2",
+				"time": "2022-08-22 14:33:33"
+			},
+			"geometry": {
+				"x": 117.37582388999999,
+				"y": 17.21261050734374
+			}
+		},
+		{
+			"attributes": {
+				"FID": 11,
+				"name": "和谐号C2",
+				"ORIG_FID": 2,
+				"lonlat": "119.133636,16.135950",
+				"heading": 356.12,
+				"speed": 36.2288,
+				"type": "C2",
+				"time": "2022-08-22 15:33:33"
+			},
+			"geometry": {
+				"x": 119.13363638999999,
+				"y": 16.13595035109374
+			}
+		},
+		{
+			"attributes": {
+				"FID": 12,
+				"name": "和谐号E2",
+				"ORIG_FID": 3,
+				"lonlat": "115.178558,22.156458",
+				"heading": 12.24,
+				"speed": 36.8643,
+				"type": "E2",
+				"time": "2022-08-22 12:08:08"
+			},
+			"geometry": {
+				"x": 115.17855826499999,
+				"y": 22.15645816359374
+			}
+		},
+		{
+			"attributes": {
+				"FID": 13,
+				"name": "和谐号E2",
+				"ORIG_FID": 3,
+				"lonlat": "117.090179,22.837611",
+				"heading": 14.12,
+				"speed": 55.1166,
+				"type": "E2",
+				"time": "2022-08-22 13:08:08"
+			},
+			"geometry": {
+				"x": 117.09017935874999,
+				"y": 22.83761050734374
+			}
+		},
+		{
+			"attributes": {
+				"FID": 14,
+				"name": "和谐号E2",
+				"ORIG_FID": 3,
+				"lonlat": "118.562347,23.914271",
+				"heading": 13.48,
+				"speed": 54.8865,
+				"type": "E2",
+				"time": "2022-08-22 13:08:08"
+			},
+			"geometry": {
+				"x": 118.56234732749999,
+				"y": 23.91427066359374
+			}
+		},
+		{
+			"attributes": {
+				"FID": 15,
+				"name": "和谐号E2",
+				"ORIG_FID": 3,
+				"lonlat": "119.902679,24.968958",
+				"heading": 14.22,
+				"speed": 37.2314,
+				"type": "E2",
+				"time": "2022-08-22 13:08:08"
+			},
+			"geometry": {
+				"x": 119.90267935874999,
+				"y": 24.96895816359374
+			}
+		},
+		{
+			"attributes": {
+				"FID": 16,
+				"name": "和谐号M2",
+				"ORIG_FID": 4,
+				"lonlat": "118.935882,23.584681",
+				"heading": 280.22,
+				"speed": 36.3246,
+				"type": "海情",
+				"time": "2022-08-22 12:19:19"
+			},
+			"geometry": {
+				"x": 118.93588248374999,
+				"y": 23.58468081984374
+			}
+		},
+		{
+			"attributes": {
+				"FID": 17,
+				"name": "和谐号M2",
+				"ORIG_FID": 4,
+				"lonlat": "117.793304,20.266810",
+				"heading": 226.38,
+				"speed": 48.1298,
+				"type": "海情",
+				"time": "2022-08-22 13:19:19"
+			},
+			"geometry": {
+				"x": 117.79330435874999,
+				"y": 20.26680972609374
+			}
+		},
+		{
+			"attributes": {
+				"FID": 18,
+				"name": "和谐号M2",
+				"ORIG_FID": 4,
+				"lonlat": "115.156586,17.871790",
+				"heading": 171.86,
+				"speed": 50.2416,
+				"type": "海情",
+				"time": "2022-08-22 14:19:19"
+			},
+			"geometry": {
+				"x": 115.15658560874999,
+				"y": 17.87179019484374
+			}
+		},
+		{
+			"attributes": {
+				"FID": 19,
+				"name": "和谐号M2",
+				"ORIG_FID": 4,
+				"lonlat": "110.498382,18.157435",
+				"heading": 170.28,
+				"speed": 36.2682,
+				"type": "海情",
+				"time": "2022-08-22 15:19:19"
+			},
+			"geometry": {
+				"x": 110.49838248374999,
+				"y": 18.15743472609374
+			}
+		}
+	]
+}

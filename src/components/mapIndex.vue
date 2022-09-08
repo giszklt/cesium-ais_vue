@@ -16,10 +16,12 @@
     <div class="main-info_dialog" ref="info" v-show="showWindow">
       <div class="main-dialog_info">
         <i class="el-icon-close" @click="closeWindow"></i>
-        <div class="main-dialog_infoItem" v-for="(item, key) in infoItems" :key="key" v-if="selBoat !== null">
-          <div class="main-infoItem_label">{{ item.name }}:</div>
-          <div class="main-infoItem_info">{{ selBoat[item.prop] }}</div>
-        </div>
+        <template v-if="selBoat !== null">
+          <div class="main-dialog_infoItem" v-for="(item, key) in infoItems" :key="key">
+            <div class="main-infoItem_label">{{ item.name }}:</div>
+            <div class="main-infoItem_info">{{ selBoat[item.prop] }}</div>
+          </div>
+        </template>
       </div>
       <div class="main-dialog_arrow"></div>
     </div>
@@ -29,7 +31,7 @@
 
 <script>
 // import aisData from "../../public/data/aisDatas.json"
-
+import { features } from "../../public/data/aisDatas.json";
 export default {
   name: 'mapIndex',
   data() {
@@ -84,7 +86,7 @@ export default {
     }
   },
   mounted() {
-    let {features} = require("../../public/data/aisDatas.json")
+    //let {features} = require("../../public/data/aisDatas.json")
     let temp = [];
     features.forEach(feature => {
       feature = feature.attributes
@@ -101,7 +103,7 @@ export default {
             heading: item.heading,
             speed: item.speed,
             lon: item.lonlat.split(",")[0],
-            lat: item.lonlat.split(",")[0],
+            lat: item.lonlat.split(",")[1],
             time: item.time
           })
         }
@@ -120,11 +122,17 @@ export default {
   methods: {
     init() {
       Cesium.Camera.DEFAULT_VIEW_RECTANGLE = Cesium.Rectangle.fromDegrees(
-          -70, // 东
-          0.0, // 南
-          0, // 西
-          90.0 // 北
+          //-70, // 东
+          //0.0, // 南
+          //0, // 西
+          //90.0, // 北
+          //更改为中国区域的初始视角
+          72,
+          10,
+          135,
+          53
       );
+      Cesium.Camera.DEFAULT_VIEW_FACTOR = 1.2;
       // const Cesium = this.Cesium
       this.viewer = new Cesium.Viewer("cesiumContainer", {
         geocoder: false,
@@ -171,8 +179,8 @@ export default {
           self.selBoat = {
             name: entity.name,
             type: entity.type,
-            heading: info.heading + "%",
-            speed: info.speed + "节",
+            heading: info.heading + "度",
+            speed: info.speed + "km/h",
             position: info.lon + "," + info.lat,
             time: info.time
           }

@@ -8,7 +8,7 @@
             label="操作"
             align="center">
           <template slot-scope="scope">
-            <el-button @click="connectLine(scope.row)" size="mini" round plain>切换</el-button>
+            <el-button @click="connectLine(scope.row, $event)" size="mini" round>切换</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -31,7 +31,10 @@
 
 <script>
 // import aisData from "../../public/data/aisDatas.json"
-import { features } from "../../public/data/aisDatas.json";
+import {features} from "../../public/data/aisDatas.json";
+import {S_Measure} from "@/util/measure";
+import test from "@/util/test"
+
 export default {
   name: 'mapIndex',
   data() {
@@ -118,6 +121,13 @@ export default {
     })
     this.init();
     this.addBoats();
+    // const measureTool = new S_Measure(this.viewer);
+    // measureTool.measurePolygon(function (e){
+    //   debugger
+    // })
+    // test.measureLineSpace(this.viewer);
+
+    test.measureAreaSpace(this.viewer);
   },
   methods: {
     init() {
@@ -213,9 +223,15 @@ export default {
     addBoats() {
       this.tableDatas.forEach(boats => {
         let id = boats.id;
-        let boatColor = Cesium.Color.fromRandom();
+        let boatColor = Cesium.Color.fromRandom({
+          alpha: 1
+        });
         // let property = computeFlight(data)
+        let line = [];
+        //添加船
         boats.points.forEach((boat, index) => {
+          let lonlat = [boat.lon, boat.lat]
+          line = [...line, ...lonlat]
           const position = Cesium.Cartesian3.fromDegrees(boat.lon, boat.lat, 0);
           this.viewer.entities.add({
             id: id + "-" + index,
@@ -236,6 +252,18 @@ export default {
             },
           })
         })
+        //添加航线
+        this.viewer.entities.add({
+          id: "ais_" + id,
+          show: false,
+          polyline: {
+            positions: Cesium.Cartesian3.fromDegreesArray(line),
+            arcType: Cesium.ArcType.RHUMB,
+            width: 10,
+            material: new Cesium.PolylineArrowMaterialProperty(boatColor),
+          }
+        })
+
       })
     },
     closeWindow() {
@@ -252,8 +280,20 @@ export default {
       }
       return property;
     },
-    connectLine(data) {
-
+    connectLine(data, e) {
+      let className = e.currentTarget.className;
+      let show = true;
+      if (className.indexOf("el-button--primary") > -1) {
+        e.currentTarget.className = className.replace(" el-button--primary", "")
+        show = false;
+      } else {
+        e.currentTarget.className = className + " el-button--primary"
+      }
+      const id = "ais_" + data.id;
+      let entity = this.viewer.entities.getById(id);
+      if (entity) {
+        entity.show = show
+      }
     }
   }
 }

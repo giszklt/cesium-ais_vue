@@ -1,3 +1,5 @@
+/*global require, process, __dirname, module*/
+/*eslint no-undef: "error"*/
 const {defineConfig} = require('@vue/cli-service')
 const path = require("path");
 const port = process.env.port || process.env.npm_config_port || 9528 // dev port

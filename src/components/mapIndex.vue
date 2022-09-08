@@ -25,6 +25,14 @@
       </div>
       <div class="main-dialog_arrow"></div>
     </div>
+    <div class="main-measure_panel">
+      <el-button size="mini" circle title="测距" @click="measurePolyline">
+        <div class="main-measure_icon" type="polyline"></div>
+      </el-button>
+      <el-button size="mini" circle title="测面" @click="measurePolygon">
+        <div class="main-measure_icon" type="polygon"></div>
+      </el-button>
+    </div>
     <div id="cesiumContainer"></div>
   </div>
 </template>
@@ -33,7 +41,10 @@
 // import aisData from "../../public/data/aisDatas.json"
 import {features} from "../../public/data/aisDatas.json";
 import {S_Measure} from "@/util/measure";
-import test from "@/util/test"
+
+
+let measureTool = null;
+
 
 export default {
   name: 'mapIndex',
@@ -121,13 +132,6 @@ export default {
     })
     this.init();
     this.addBoats();
-    // const measureTool = new S_Measure(this.viewer);
-    // measureTool.measurePolygon(function (e){
-    //   debugger
-    // })
-    // test.measureLineSpace(this.viewer);
-
-    test.measureAreaSpace(this.viewer);
   },
   methods: {
     init() {
@@ -173,6 +177,7 @@ export default {
       this.viewer.scene.debugShowFramesPerSecond = true;
       this.viewer.scene.postProcessStages.fxaa.enabled = true;
 
+      measureTool = new S_Measure(this.viewer);
 
       let handler = new Cesium.ScreenSpaceEventHandler(this.viewer.scene.canvas);
       let self = this;
@@ -204,7 +209,6 @@ export default {
           self.viewer.scene.postRender.removeEventListener()
         }
       }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
-
       self.removeHandler = self.viewer.scene.postRender.addEventListener(() => {
         if (self.selBoat == null) {
           return;
@@ -294,7 +298,15 @@ export default {
       if (entity) {
         entity.show = show
       }
-    }
+    },
+    measurePolyline() {
+      measureTool.measurePolyLine(function (e) {
+      })
+    },
+    measurePolygon() {
+      measureTool.measurePolygon(function (e) {
+      })
+    },
   }
 }
 </script>
@@ -312,6 +324,29 @@ export default {
     margin: 0;
     width: 100%;
     height: 100%;
+  }
+
+  .main-measure_panel {
+    position: absolute;
+    z-index: 1;
+    right: 80px;
+    width: auto;
+    padding: 8px;
+
+    .main-measure_icon {
+      width: 16px;
+      height: 16px;
+      text-align: center;
+      background-size: contain !important;
+
+      &[type='polyline'] {
+        background: url("@/assets/polyline.png");
+      }
+
+      &[type='polygon'] {
+        background: url("@/assets/polygon.png");
+      }
+    }
   }
 
   .main-info_panel {

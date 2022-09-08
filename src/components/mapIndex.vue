@@ -223,7 +223,7 @@ export default {
             type: boats.type,
             boatInfo: boat,
             position: position,
-            orientation: Cesium.Transforms.headingPitchRollQuaternion(position, new Cesium.HeadingPitchRoll(Cesium.Math.toRadians(boat.heading), Cesium.Math.toRadians(0),
+            orientation: Cesium.Transforms.headingPitchRollQuaternion(position, new Cesium.HeadingPitchRoll(Cesium.Math.toRadians(boat.heading - 90), Cesium.Math.toRadians(0),
                 Cesium.Math.toRadians(0))),
             // position: property,
             // orientation: new Cesium.VelocityOrientationProperty(property),

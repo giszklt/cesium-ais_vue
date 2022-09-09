@@ -1,7 +1,7 @@
 <template>
   <div class="main">
     <div class="main-info_panel">
-      <el-table size="mini" border :data="tableDatas" max-height="400" stripe highlight-current-row>
+      <el-table size="mini" border :data="tableDatas" max-height="400" stripe>
         <el-table-column v-for="col in cols" :key="col.prop" :label="col.name" :prop="col.prop"
                          align="center"></el-table-column>
         <el-table-column
@@ -383,6 +383,56 @@ export default {
 
     .el-table {
       border-radius: 5px;
+      color: #e9eaed;
+      /deep/ thead {
+        color: #e9eaed;
+      }
+      /deep/.el-button {
+        background-color: #dcdfe6;
+      }
+      /deep/.el-button--primary {
+        background-color: #409eff !important;
+      }
+    }
+    /deep/ .el-table,
+    .el-table__expanded-cell {
+      background-color: rgba(5, 5, 65, 0.2);
+    }
+    /deep/ .el-table tr {
+      background-color: rgba(5, 5, 65, 0.2) !important;
+    }
+    /deep/ .el-table th {
+      background-color: rgba(5, 5, 65, 0.2) !important;
+    }
+    /deep/ .el-table--enable-row-transition .el-table__body td,
+    .el-table .cell {
+      background-color: rgba(5, 5, 65, 0.2);
+    }
+
+    /deep/.el-table--border:after,
+    /deep/.el-table--group:after,
+    /deep/.el-table:before {
+      background-color: #949494;
+    }
+
+    /deep/.el-table--border,
+    /deep/.el-table--group {
+      border-color: #949494;
+    }
+
+    /deep/.el-table td,
+    /deep/.el-table th.is-leaf {
+      border-color: #949494;
+    }
+
+    /deep/.el-table--border th,
+    /deep/.el-table--border th.gutter:last-of-type {
+      border-color: #949494;
+    }
+
+    /deep/.el-table--border td,
+    /deep/.el-table--border th {
+      border-color: #949494;
     }
   }
 
@@ -394,10 +444,10 @@ export default {
     padding: 5px;
 
     .main-dialog_info {
-      background: #fafafa;
+      background: rgba(5, 5, 65, 0.4);
       border-radius: 7px;
       font-size: 12px;
-      color: #909399;
+      color: #e9eaed;
       padding-top: 5px;
 
       .el-icon-close {
@@ -427,7 +477,7 @@ export default {
       margin: auto;
       width: 0;
       height: 0;
-      border-top: 12px solid #fff;
+      border-top: 12px solid rgba(5, 5, 65, 0.4);
       border-right: 12px solid transparent;
       border-bottom: 12px solid transparent;
       border-left: 12px solid transparent;

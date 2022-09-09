@@ -41,7 +41,7 @@
       "no-debugger": "off"
     },
     "globals": {
-        "Cesium": true
+      "Cesium": true
     }
   },
   "browserslist": [

@@ -26,10 +26,12 @@
       <div class="main-dialog_arrow"></div>
     </div>
     <div class="main-measure_panel">
-      <el-button size="mini" circle title="测距" @click="measurePolyline">
+      <el-button size="mini" circle title="测距" @click="measurePolyline"
+                 :type="selMeasure == 'polyline' ? 'primary' : ''" :disabled="selMeasure && selMeasure != 'polyline'">
         <div class="main-measure_icon" type="polyline"></div>
       </el-button>
-      <el-button size="mini" circle title="测面" @click="measurePolygon">
+      <el-button size="mini" circle title="测面" @click="measurePolygon"
+                 :type="selMeasure == 'polygon' ? 'primary' : ''" :disabled="selMeasure && selMeasure != 'polygon'">
         <div class="main-measure_icon" type="polygon"></div>
       </el-button>
     </div>
@@ -91,7 +93,8 @@ export default {
           name: "时刻",
           prop: "time"
         },
-      ]
+      ],
+      selMeasure: null,
     }
   },
   watch: {
@@ -185,6 +188,11 @@ export default {
         let pick = self.viewer.scene.pick(movement.position);
         if (pick && Cesium.defined(pick) && pick.id) {
           const entity = pick.id;
+          if (entity.label && entity.label.measure) {
+            let measureId = entity.id.split("_");
+            measureId = measureId[0] + "_" + measureId[1] + "_"
+            measureTool.deleteMeasure(measureId)
+          }
           const info = entity.boatInfo
           const ellipsoid = self.viewer.scene.globe.ellipsoid;
           self.tempCartesian = self.viewer.camera.pickEllipsoid(movement.position, ellipsoid)
@@ -264,6 +272,7 @@ export default {
             positions: Cesium.Cartesian3.fromDegreesArray(line),
             arcType: Cesium.ArcType.RHUMB,
             width: 10,
+            clampToGround: true,
             material: new Cesium.PolylineArrowMaterialProperty(boatColor),
           }
         })
@@ -300,11 +309,27 @@ export default {
       }
     },
     measurePolyline() {
+      if (this.selMeasure == "polyline") {
+        this.selMeasure = null;
+        measureTool.destoryHandler()
+        return
+      }
+      this.selMeasure = "polyline";
+      let self = this;
       measureTool.measurePolyLine(function (e) {
+        self.selMeasure = null;
       })
     },
     measurePolygon() {
+      if (this.selMeasure == "polygon") {
+        this.selMeasure = null;
+        measureTool.destoryHandler()
+        return
+      }
+      let self = this;
+      this.selMeasure = "polygon";
       measureTool.measurePolygon(function (e) {
+        self.selMeasure = null;
       })
     },
   }

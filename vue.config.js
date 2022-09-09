@@ -12,10 +12,11 @@ function resolve(dir) {
 module.exports = defineConfig({
     transpileDependencies: true,
     outputDir: './dist',
-    lintOnSave:false,
+    lintOnSave: false,
     assetsDir: './',
     productionSourceMap: false,
     devServer: {
+        host: "localhost",
         port: port,
         open: true
     },

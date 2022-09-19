@@ -410,6 +410,7 @@ export class S_Measure {
     /**
      * 添加点
      * @param position
+     * @param id
      */
     addPoint(position, id) {
         let entity = this.viewer.entities.add(new Cesium.Entity({
@@ -428,6 +429,7 @@ export class S_Measure {
     /**
      * 添加线
      * @param positions
+     * @param id
      */
     addLine(positions, id) {
         let dynamicPositions = new Cesium.CallbackProperty(() => {
@@ -452,6 +454,7 @@ export class S_Measure {
     /**
      * 添加面
      * @param positions
+     * @param id
      */
     addPolyGon(positions, id) {
         let dynamicPositions = new Cesium.CallbackProperty(() => {
@@ -470,8 +473,9 @@ export class S_Measure {
 
     /**
      * 添加标签
-     * @param position
+     * @param centerPoint
      * @param text
+     * @param id
      */
     addLabel(centerPoint, text, id) {
         return this.viewer.entities.add(new Cesium.Entity({

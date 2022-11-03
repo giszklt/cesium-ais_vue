@@ -135,6 +135,14 @@ export default {
     })
     this.init();
     this.addBoats();
+    const dataSourcePromise = this.viewer.dataSources.add(
+        Cesium.CzmlDataSource.load("./data/simple.czml")
+    );
+    let self = this;
+    dataSourcePromise.then(re => {
+
+      self.sersorDemo(self.viewer.entities.getById("Geoeye1") , 1);
+    })
   },
   methods: {
     init() {
@@ -156,10 +164,10 @@ export default {
         // baseLayerPicker: false,
         selectionIndicator: false,
         baseLayerPicker: false,
-        animation: false,
+        animation: true,
         navigationHelpButton: false,
         infoBox: false,
-        timeline: false,
+        timeline: true,
 
         fullscreenButton: false,
         // sceneMode: Cesium.SceneMode.SCENE2D,
@@ -179,6 +187,9 @@ export default {
       this.viewer.scene.fxaa = true;
       this.viewer.scene.debugShowFramesPerSecond = true;
       this.viewer.scene.postProcessStages.fxaa.enabled = true;
+
+
+
 
       measureTool = new S_Measure(this.viewer);
 
@@ -227,6 +238,153 @@ export default {
           self.setWindowAt(changedC);
         }
       })
+
+    },
+    //模拟卫星传感器
+    addCompute() {
+      let self = this;
+      let data = [
+        {
+          longitude: 116.405419,
+          dimension: 39.918034,
+          height: 700000,
+          time: 0
+        }, {
+          longitude: 115.2821,
+          dimension: 39.918145,
+          height: 700000,
+          time: 40
+        }, {
+          longitude: 114.497402,
+          dimension: 39.344641,
+          height: 700000,
+          time: 100
+        }, {
+          longitude: 107.942392,
+          dimension: 35.559967,
+          height: 700000,
+          time: 280
+        }, {
+          longitude: 106.549265,
+          dimension: 34.559967,
+          height: 700000,
+          time: 360
+        }, {
+          longitude: 95.2821,
+          dimension: 32.918145,
+          height: 700000,
+          time: 400
+        }, {
+          longitude: 94.497402,
+          dimension: 30.344641,
+          height: 700000,
+          time: 450
+        }, {
+          longitude: 87.942392,
+          dimension: 25.559967,
+          height: 700000,
+          time: 550
+        }, {
+          longitude: 66.549265,
+          dimension: 24.559967,
+          height: 700000,
+          time: 600
+        }];
+      // 起始时间
+      let start = Cesium.JulianDate.fromDate(new Date(2017, 7, 11));
+      // 结束时间
+      let stop = Cesium.JulianDate.addSeconds(start, 600, new Cesium.JulianDate());
+
+      // 设置始时钟始时间
+      self.viewer.clock.startTime = start.clone();
+      // 设置时钟当前时间
+      self.viewer.clock.currentTime = start.clone();
+      // 设置始终停止时间
+      self.viewer.clock.stopTime = stop.clone();
+      // 时间速率，数字越大时间过的越快
+      self.viewer.clock.multiplier = 10;
+      // 时间轴
+      self.viewer.timeline.zoomTo(start, stop);
+      // 循环执行
+      self.viewer.clock.clockRange = Cesium.ClockRange.LOOP_STOP;
+
+
+      let property = computeFlight(data);
+      // 添加模型
+      let planeModel = self.viewer.entities.add({
+        // 和时间轴关联
+        availability: new Cesium.TimeIntervalCollection([new Cesium.TimeInterval({
+          start: start,
+          stop: stop
+        })]),
+        position: property,
+        // 根据所提供的速度计算点
+        orientation: new Cesium.VelocityOrientationProperty(property),
+        // 模型数据
+        model: {
+          uri: '../gltfModel/weixin.gltf',
+          minimumPixelSize: 128
+        },
+        path: {
+          resolution: 1,
+          material: new Cesium.PolylineGlowMaterialProperty({
+            glowPower: .1,
+            color: Cesium.Color.YELLOW
+          }),
+          width: 10
+        }
+      });
+      planeModel.position.setInterpolationOptions({ //设定位置的插值算法
+        interpolationDegree: 5,
+        interpolationAlgorithm: Cesium.LagrangePolynomialApproximation
+      });
+
+      let property2 = computeFlight2(data);
+      let entity_ty = self.viewer.entities.add({
+        availability: new Cesium.TimeIntervalCollection([new Cesium.TimeInterval({
+          start: start,
+          stop: stop
+        })]),
+        position: property2,
+        orientation: new Cesium.VelocityOrientationProperty(property2),
+        cylinder: {
+          HeightReference: Cesium.HeightReference.CLAMP_TO_GROUND,
+          length: 700000,
+          topRadius: 0,
+          bottomRadius: 700000 / 2,
+          material: Cesium.Color.RED.withAlpha(.4),
+          outline: !0,
+          numberOfVerticalLines: 0,
+          outlineColor: Cesium.Color.RED.withAlpha(.8)
+        },
+      });
+      entity_ty.position.setInterpolationOptions({
+        interpolationDegree: 5,
+        interpolationAlgorithm: Cesium.LagrangePolynomialApproximation
+      });
+
+
+      function computeFlight(source) {
+        let property = new Cesium.SampledPositionProperty();
+        for (let i = 0; i < source.length; i++) {
+          let time = Cesium.JulianDate.addSeconds(start, source[i].time, new Cesium.JulianDate);
+          let position = Cesium.Cartesian3.fromDegrees(source[i].longitude, source[i].dimension, source[i].height);
+          // 添加位置，和时间对应
+          property.addSample(time, position);
+        }
+        return property;
+      }
+
+      function computeFlight2(source) {
+        let property = new Cesium.SampledPositionProperty();
+        for (let i = 0; i < source.length; i++) {
+          let time = Cesium.JulianDate.addSeconds(start, source[i].time, new Cesium.JulianDate);
+          let position = Cesium.Cartesian3.fromDegrees(source[i].longitude, source[i].dimension, source[i].height / 2);
+          // 添加位置，和时间对应
+          property.addSample(time, position);
+        }
+        return property;
+      }
     },
     setWindowAt(position) {
       this.$refs.info.style.left = (position.x - 95) + "px";
@@ -332,6 +490,97 @@ export default {
         self.selMeasure = null;
       })
     },
+
+    setPos(entity, step) {
+      let computeLine = function (position, startTime, step) {
+        let property = new Cesium.SampledPositionProperty();
+        position.forEach((item, index) => {
+          let time = Cesium.JulianDate.addSeconds(
+              startTime,
+              index * step,
+              new Cesium.JulianDate()
+          );
+          property.addSample(time, item);
+        });
+        let time2 = Cesium.JulianDate.addSeconds(
+            startTime,
+            step / position.length,
+            new Cesium.JulianDate()
+        );
+        let pos = Cesium.HeadingPitchRoll.fromQuaternion(new Cesium.VelocityOrientationProperty(property).getValue(time2))
+        return {
+          sys: new Cesium.VelocityOrientationProperty(property).getValue(time2),
+          olj: {
+            // heading: pos.heading,
+            // pitch: pos.pitch,
+            // roll: pos.roll
+            heading: Cesium.Math.toDegrees(pos.heading),
+            pitch: Cesium.Math.toDegrees(pos.pitch),
+            roll: Cesium.Math.toDegrees(pos.roll)
+          }
+        }
+      };
+      let tiem1 = this.viewer.clock.currentTime;
+      let time2 = Cesium.JulianDate.addSeconds(
+          this.viewer.clock.currentTime,
+          5,
+          new Cesium.JulianDate()
+      );
+      let position = [entity.position.getValue(tiem1), entity.position.getValue(time2)];
+      return computeLine(position, tiem1, step);
+    },
+    getEntityPos(entity, time) {
+      if (entity.position.getValue(time)) {
+        let cartog = Cesium.Cartographic.fromCartesian(entity.position.getValue(time));
+        return {
+          lon: Cesium.Math.toDegrees(cartog.longitude),
+          lat: Cesium.Math.toDegrees(cartog.latitude),
+          alt: cartog.height,
+        }
+      } else {
+        return {
+          lon: 0,
+          lat: 0,
+          alt: 0,
+        };
+      }
+
+    },
+    //卫星实体，幅宽
+    sersorDemo(satellite, far) {
+      let clockNow = 1;
+      let currentTime = this.viewer.clock.currentTime;
+      let position = this.getEntityPos(satellite, currentTime);
+      let alt = position.alt * 2.5;
+      let customSensor = new CesiumSensors.CustomSensorVolume();
+      // debugger
+      let directions = [];
+      for (let i = 0; i <= 250; i++) {
+        let clock = Cesium.Math.toRadians(clockNow * i);// 弧度
+        let cone = Cesium.Math.toRadians(far);
+        directions.push(new Cesium.Spherical(clock, cone));
+      }
+      directions.push(new Cesium.Spherical(0, 0));
+      let self = this;
+      this.viewer.scene.preRender.addEventListener((scene, time) => {
+        if (satellite.computeModelMatrix(time)) {
+          let modelMatrix = satellite.computeModelMatrix(time);
+          if (typeof (modelMatrix) == 'object') {
+            Cesium.Matrix4.multiply(modelMatrix, Cesium.Matrix4.fromRotationTranslation(Cesium.Matrix3.fromRotationY(Cesium.Math.toRadians(-180))), modelMatrix)
+            customSensor.modelMatrix = modelMatrix
+          }
+          let posData = self.setPos(self.viewer, satellite, 5);
+          satellite.orientation = posData.sys;
+        }
+      })
+      customSensor.id = 'sersor';
+      customSensor.radius = alt;
+      customSensor.directions = directions;
+      let entity = this.viewer.scene.primitives.add(customSensor);
+      entity.intersectionColor.red = 0.2;
+      entity.lateralSurfaceMaterial.uniforms.color = new Cesium.Color(51 / 255, 255 / 255, 255 / 255, 0.2);
+      return entity
+    },
   }
 }
 </script>
@@ -384,54 +633,61 @@ export default {
     .el-table {
       border-radius: 5px;
       color: #e9eaed;
+
       /deep/ thead {
         color: #e9eaed;
       }
-      /deep/.el-button {
+
+      /deep/ .el-button {
         background-color: #dcdfe6;
       }
-      /deep/.el-button--primary {
+
+      /deep/ .el-button--primary {
         background-color: #409eff !important;
       }
     }
+
     /deep/ .el-table,
     .el-table__expanded-cell {
       background-color: rgba(5, 5, 65, 0.2);
     }
+
     /deep/ .el-table tr {
       background-color: rgba(5, 5, 65, 0.2) !important;
     }
+
     /deep/ .el-table th {
       background-color: rgba(5, 5, 65, 0.2) !important;
     }
+
     /deep/ .el-table--enable-row-transition .el-table__body td,
     .el-table .cell {
       background-color: rgba(5, 5, 65, 0.2);
     }
 
-    /deep/.el-table--border:after,
-    /deep/.el-table--group:after,
-    /deep/.el-table:before {
+    /deep/ .el-table--border:after,
+    /deep/ .el-table--group:after,
+    /deep/ .el-table:before {
       background-color: #949494;
     }
 
-    /deep/.el-table--border,
-    /deep/.el-table--group {
+    /deep/ .el-table--border,
+    /deep/ .el-table--group {
       border-color: #949494;
     }
 
-    /deep/.el-table td,
-    /deep/.el-table th.is-leaf {
+    /deep/ .el-table td,
+    /deep/ .el-table th.is-leaf {
       border-color: #949494;
     }
 
-    /deep/.el-table--border th,
-    /deep/.el-table--border th.gutter:last-of-type {
+    /deep/ .el-table--border th,
+    /deep/ .el-table--border th.gutter:last-of-type {
       border-color: #949494;
     }
 
-    /deep/.el-table--border td,
-    /deep/.el-table--border th {
+    /deep/ .el-table--border td,
+    /deep/ .el-table--border th {
       border-color: #949494;
     }
   }

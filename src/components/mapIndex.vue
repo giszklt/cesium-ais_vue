@@ -583,6 +583,83 @@ export default {
       entity.lateralSurfaceMaterial.uniforms.color = new Cesium.Color(51 / 255, 255 / 255, 255 / 255, 0.2);
       return entity
     },
+    //参考代码
+    moveEntity(viewer, type, satellite, data) { // 场景，卫星实体,视场角
+      //圆锥clockNow===2;
+      let entity = null;
+      let clockNow = 1;
+      if (type == 2) clockNow = 90;
+      let currentTime = viewer.clock.currentTime;
+      let position = this.getEntityPos(satellite, currentTime);
+      let alt = position.alt * 2.5;
+      if (type == 2) {
+        alt = position.alt * 10 + position.alt * 10;
+      }
+
+      let customSensor = new CesiumSensors.CustomSensorVolume();
+      // debugger
+      let directions = [];
+      let maxAngle = data.maxAngle ? data.maxAngle : 360;
+      let minAngle = data.minAngle ? data.minAngle : 0;
+      let ru = data.ru;
+      for (let i = minAngle; i <= maxAngle; i++) {
+        let clock = Cesium.Math.toRadians(clockNow * (i + 180));// 弧度
+        if (data.isld) {
+          let lat = position.lat;
+          ru = data.type == 1 ? 2000 : 3000
+          if (lat > -50 && lat < 50) {
+            ru = data.type == 1 ? 3000 : 4000
+          }
+        }
+        //根据高度，计算视场角的far值
+        let tempFar = (180 / Math.PI) * 2 * Math.atan(ru * 1000 / position.alt);
+        if (tempFar > 90) {
+          tempFar = 180 - tempFar;
+        }
+        let cone = Cesium.Math.toRadians(tempFar);
+        directions.push(new Cesium.Spherical(clock, cone));
+      }
+      if (data.isais)
+        directions.push(new Cesium.Spherical(0, 0));
+      let self = this;
+      let fun = (scene, time) => {
+        if (satellite.computeModelMatrix(time)) {
+          if (data.isld) {
+            let tepPosition = self.getEntityPos(satellite, time);
+            let lat = tepPosition.lat;
+            let tempru = data.type == 1 ? 2000 : 3000
+            if (lat > -50 && lat < 50) {
+              tempru = data.type == 1 ? 3000 : 4000
+            }
+            if (ru != tempru) {
+              ru = tempru;
+              console.log("oneee")
+              viewer.scene.primitives.remove(entity);
+              viewer.scene.preRender.removeEventListener(fun);
+              self.moveEntity(viewer, type, satellite, data)
+            }
+          }
+          let modelMatrix = satellite.computeModelMatrix(time);
+          if (typeof (modelMatrix) == 'object') {
+            Cesium.Matrix4.multiply(modelMatrix, Cesium.Matrix4.fromRotationTranslation(Cesium.Matrix3.fromRotationY(Cesium.Math.toRadians(-180))), modelMatrix)
+            customSensor.modelMatrix = modelMatrix
+          }
+          let posData = this.setPos(viewer, satellite, 5);
+          satellite.orientation = posData.sys;
+        }
+      }
+      viewer.scene.preRender.addEventListener(fun)
+      customSensor.id = data.id;
+      customSensor.radius = alt;
+      customSensor.directions = directions;
+      // customSensor.showIntersection = false
+
+      // customSensor._directionsDirty = true
+      entity = viewer.scene.primitives.add(customSensor);
+      entity.intersectionColor.red = 0.2;
+      entity.lateralSurfaceMaterial.uniforms.color = new Cesium.Color(51 / 255, 255 / 255, 255 / 255, 0.2);
+      return entity
+    },
   }
 }
 </script>

@@ -134,15 +134,17 @@ export default {
 
     })
     this.init();
-    this.addBoats();
+    // this.addBoats();
     const dataSourcePromise = this.viewer.dataSources.add(
         Cesium.CzmlDataSource.load("./data/simple.czml")
     );
     let self = this;
     dataSourcePromise.then(re => {
-
-      self.sersorDemo(self.viewer.entities.getById("Geoeye1") , 1);
+      self.sersorDemo(self.viewer.dataSources.get(0).entities.getById("Sensor") , 10);
     })
+    // setTimeout(function (){
+    //   self.sersorDemo(self.viewer.dataSources.get(0).entities.getById("SensorTT") , 10);
+    // }, 10000)
   },
   methods: {
     init() {
@@ -539,9 +541,9 @@ export default {
         }
       } else {
         return {
-          lon: 0,
-          lat: 0,
-          alt: 0,
+          lon: 104,
+          lat: 31,
+          alt: 1040000,
         };
       }
 
@@ -556,7 +558,7 @@ export default {
       // debugger
       let directions = [];
       for (let i = 0; i <= 250; i++) {
-        let clock = Cesium.Math.toRadians(clockNow * i);// 弧度
+        let clock = Cesium.Math.toRadians(clockNow * (i + 180));// 弧度
         let cone = Cesium.Math.toRadians(far);
         directions.push(new Cesium.Spherical(clock, cone));
       }
@@ -569,7 +571,7 @@ export default {
             Cesium.Matrix4.multiply(modelMatrix, Cesium.Matrix4.fromRotationTranslation(Cesium.Matrix3.fromRotationY(Cesium.Math.toRadians(-180))), modelMatrix)
             customSensor.modelMatrix = modelMatrix
           }
-          let posData = self.setPos(self.viewer, satellite, 5);
+          let posData = self.setPos(satellite, 5);
           satellite.orientation = posData.sys;
         }
       })

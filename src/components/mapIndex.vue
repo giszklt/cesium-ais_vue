@@ -43,6 +43,7 @@
 // import aisData from "../../public/data/aisDatas.json"
 import {features} from "../../public/data/aisDatas.json";
 import {S_Measure} from "@/util/measure";
+// import * as Cesium from "cesium";
 
 
 let measureTool = null;
@@ -95,6 +96,22 @@ export default {
         },
       ],
       selMeasure: null,
+      islands: [{
+        name: "南沙群岛",
+        position: [114.837, 9.45]
+      }, {
+        name: "中砂群岛",
+        position: [115.432, 16.231]
+      }, {
+        name: "西沙群岛",
+        position: [112.3386, 16.35]
+      }, {
+        name: "澎湖县",
+        position: [119.5959, 23.6076]
+      }, {
+        name: "长岛县",
+        position: [120.666, 38.12]
+      }]
     }
   },
   watch: {
@@ -134,14 +151,15 @@ export default {
 
     })
     this.init();
-    // this.addBoats();
-    const dataSourcePromise = this.viewer.dataSources.add(
-        Cesium.CzmlDataSource.load("./data/simple.czml")
-    );
-    let self = this;
-    dataSourcePromise.then(re => {
-      self.sersorDemo(self.viewer.dataSources.get(0).entities.getById("Sensor") , 10);
-    })
+    this.addIsland();
+    this.addBoats();
+    // const dataSourcePromise = this.viewer.dataSources.add(
+    //     Cesium.CzmlDataSource.load("./data/simple.czml")
+    // );
+    // let self = this;
+    // dataSourcePromise.then(re => {
+    //   self.sersorDemo(self.viewer.dataSources.get(0).entities.getById("Sensor") , 10);
+    // })
     // setTimeout(function (){
     //   self.sersorDemo(self.viewer.dataSources.get(0).entities.getById("SensorTT") , 10);
     // }, 10000)
@@ -189,8 +207,6 @@ export default {
       this.viewer.scene.fxaa = true;
       this.viewer.scene.debugShowFramesPerSecond = true;
       this.viewer.scene.postProcessStages.fxaa.enabled = true;
-
-
 
 
       measureTool = new S_Measure(this.viewer);
@@ -392,6 +408,47 @@ export default {
       this.$refs.info.style.left = (position.x - 95) + "px";
       this.$refs.info.style.top = (position.y - 170) + "px";
     },
+    addIsland() {
+      const viewer = this.viewer;
+      this.islands.forEach(island => {
+        viewer.entities.add({
+          position: Cesium.Cartesian3.fromDegrees(island.position[0], island.position[1]),
+          label: {
+            font: "12px Helvetica",
+            text: island.name,
+          },
+        });
+      })
+      let promise = viewer.dataSources.add(
+          Cesium.GeoJsonDataSource.load(
+              "./data/island.json",
+              {
+                strokeWidth: 3,
+              }
+          )
+      );
+      promise.then(dataSource => {
+        let entities = dataSource.entities.values;
+        for (let i = 0; i < entities.length; i++) {
+          //For each entity, create a random color based on the state name.
+          //Some states have multiple entities, so we store the color in a
+          //hash so that we use the same color for the entire state.
+          const entity = entities[i];
+          //Set the polygon material to our random color.
+          entity.polygon.outlineColor = Cesium.Color.fromCssColorString("rgba(255,0,0,1)");
+          entity.polygon.outline = true;
+          entity.polygon.fill = Cesium.Color.fromCssColorString("rgba(0,0,0,0)");
+          entity.polygon.arcType = Cesium.ArcType.RHUMB;
+          entity.polygon.height = 0;
+
+
+          //Extrude the polygon based on the state's population.  Each entity
+          //stores the properties for the GeoJSON feature it was created from
+          //Since the population is a huge number, we divide by 50.
+          // entity.polygon.extrudedHeight = 0
+        }
+      })
+    },
     addBoats() {
       this.tableDatas.forEach(boats => {
         let id = boats.id;
@@ -399,11 +456,13 @@ export default {
           alpha: 1
         });
         // let property = computeFlight(data)
-        let line = [];
         //添加船
+        const length = boats.points.length
         boats.points.forEach((boat, index) => {
-          let lonlat = [boat.lon, boat.lat]
-          line = [...line, ...lonlat]
+          let next = null;
+          if (index < length - 1) {
+            next = boats.points[index + 1];
+          }
           const position = Cesium.Cartesian3.fromDegrees(boat.lon, boat.lat, 0);
           this.viewer.entities.add({
             id: id + "-" + index,
@@ -416,26 +475,23 @@ export default {
             // position: property,
             // orientation: new Cesium.VelocityOrientationProperty(property),
             model: {
-              uri: './data/3dmodel/boat.glb', //gltf文件的URL
+              uri: './data/3dmodel/Ship.glb', //gltf文件的URL
               scale: 1000,     //放大倍数
               color: boatColor,  // 船模型颜色
               silhouetteColor: Cesium.Color.fromCssColorString('rgba(0, 255, 0, 1)'),   // 船模型边框颜色
               silhouetteSize: 1      // 船模型边框宽度
             },
+            polyline: next ? {
+              show: false,
+              positions: Cesium.Cartesian3.fromDegreesArray([boat.lon, boat.lat, next.lon, next.lat]),
+              arcType: Cesium.ArcType.RHUMB,
+              width: 10,
+              clampToGround: true,
+              material: new Cesium.PolylineArrowMaterialProperty(boatColor),
+            } : null
           })
         })
-        //添加航线
-        this.viewer.entities.add({
-          id: "ais_" + id,
-          show: false,
-          polyline: {
-            positions: Cesium.Cartesian3.fromDegreesArray(line),
-            arcType: Cesium.ArcType.RHUMB,
-            width: 10,
-            clampToGround: true,
-            material: new Cesium.PolylineArrowMaterialProperty(boatColor),
-          }
-        })
+
 
       })
     },
@@ -462,11 +518,20 @@ export default {
       } else {
         e.currentTarget.className = className + " el-button--primary"
       }
-      const id = "ais_" + data.id;
-      let entity = this.viewer.entities.getById(id);
-      if (entity) {
-        entity.show = show
-      }
+      this.tableDatas.some(boats => {
+        if (data.id == boats.id) {
+          boats.points.some((boat, index) => {
+            if (index < length - 1) {
+              return true;
+            }
+            let entity = this.viewer.entities.getById(data.id + "-" + index);
+            if (entity) {
+              entity.polyline.show = show
+            }
+          })
+          return true;
+        }
+      })
     },
     measurePolyline() {
       if (this.selMeasure == "polyline") {

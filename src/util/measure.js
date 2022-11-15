@@ -7,7 +7,7 @@ export class S_Measure {
         this.measureIndex = 0;
         this.viewer = viewer
         this.entityCollection = []
-        this.viewer.scene.globe.depthTestAgainstTerrain = true;
+        // this.viewer.scene.globe.depthTestAgainstTerrain = true;
         this.handler = new Cesium.ScreenSpaceEventHandler(this.viewer.scene.canvas);
         this.mousetip = null;
         this.mousemove = null;
@@ -89,10 +89,13 @@ export class S_Measure {
         let measureIndex = 0;
         this.measureIndex++;
         let parentId = "measure_" + this.measureIndex;
+        let globe = this.viewer.scene.globe;
+        let camera = this.viewer.camera;
+        let scene = this.viewer.scene;
         // 注册鼠标左击事件
         this.handler.setInputAction((clickEvent) => {
-            let cartesian = this.viewer.scene.pickPosition(clickEvent.position); // 坐标
-            // let cartesian = this.viewer.scene.globe.pick(this.viewer.camera.getPickRay(clickEvent.position), this.viewer.scene);
+            // let cartesian = this.viewer.scene.pickPosition(clickEvent.position); // 深度开启时可用坐标
+            let cartesian = globe.pick(camera.getPickRay(clickEvent.position), scene);
             // 存储第一个点
             if (!cartesian) {
                 return false;
@@ -108,8 +111,8 @@ export class S_Measure {
         }, Cesium.ScreenSpaceEventType.LEFT_CLICK);
         // 注册鼠标移动事件
         this.handler.setInputAction((moveEvent) => {
-            let movePosition = this.viewer.scene.pickPosition(moveEvent.endPosition); // 鼠标移动的点
-            // let movePosition = this.viewer.scene.globe.pick(this.viewer.camera.getPickRay(moveEvent.endPosition), this.viewer.scene);
+            // let movePosition = this.viewer.scene.pickPosition(moveEvent.endPosition); // 鼠标移动的点
+            let movePosition = globe.pick(camera.getPickRay(moveEvent.endPosition), scene);
             if (!movePosition) {
                 if (this.mousetip) {
                     this.mousetip.show = false;
@@ -153,7 +156,7 @@ export class S_Measure {
             this.viewer.entities.remove(labelEntity);
             this.addClearIcon();
             this.destoryHandler();
-            let pick = this.viewer.scene.pick(clickEvent.position);
+            let pick = scene.pick(clickEvent.position);
             if (pick && pick.id && pick.id.point != undefined) {
                 if (callback) {
                     callback()
@@ -180,12 +183,15 @@ export class S_Measure {
         let measureIndex = 0;
         this.measureIndex++;
         let parentId = "measure_" + this.measureIndex;
+        let globe = this.viewer.scene.globe;
+        let camera = this.viewer.camera;
+        let scene = this.viewer.scene;
         // this.viewer.scene.globe.depthTestAgainstTerrain = false;
 
         this.handler.setInputAction((clickEvent) => {
             clickStatus = true;
-            let cartesian = this.viewer.scene.pickPosition(clickEvent.position);
-            // let cartesian = this.viewer.scene.globe.pick(this.viewer.camera.getPickRay(clickEvent.position), this.viewer.scene);
+            // let cartesian = this.viewer.scene.pickPosition(clickEvent.position);
+            let cartesian = globe.pick(camera.getPickRay(clickEvent.position), scene);
 
             // console.log(cartesian);
 
@@ -220,10 +226,8 @@ export class S_Measure {
 
 
         this.handler.setInputAction((moveEvent) => {
-            this.viewer.scene.pickPosition(moveEvent.endPosition)
-
-            let movePosition = this.viewer.scene.pickPosition(moveEvent.endPosition);
-            // let movePosition = this.viewer.scene.globe.pick(this.viewer.camera.getPickRay(moveEvent.endPosition), this.viewer.scene);//depthTestAgainstTerrain关闭时使用
+            // let movePosition = this.viewer.scene.pickPosition(moveEvent.endPosition);
+            let movePosition = globe.pick(camera.getPickRay(moveEvent.endPosition), scene);//depthTestAgainstTerrain关闭时使用
             // console.log(movePosition);
             if (!movePosition) {
                 if (this.mousetip) {
@@ -306,11 +310,14 @@ export class S_Measure {
         let labelEntity_1 = null; // 标签实体
         let labelEntity_2 = null; // 标签实体
         let labelEntity_3 = null; // 标签实体
+        let globe = this.viewer.scene.globe;
+        let camera = this.viewer.camera;
+        let scene = this.viewer.scene;
 
         // 注册鼠标左击事件
         this.handler.setInputAction((clickEvent) => {
-            let cartesian = this.viewer.scene.pickPosition(clickEvent.position); // 坐标
-            //let cartesian = this.viewer.scene.globe.pick(this.viewer.camera.getPickRay(clickEvent.position), this.viewer.scene);
+            // let cartesian = this.viewer.scene.pickPosition(clickEvent.position); // 坐标
+            let cartesian = globe.pick(camera.getPickRay(clickEvent.position), scene);
 
             // 存储第一个点
 
@@ -323,8 +330,8 @@ export class S_Measure {
 
                 // 注册鼠标移动事件
                 this.handler.setInputAction((moveEvent) => {
-                    let movePosition = this.viewer.scene.pickPosition(moveEvent.endPosition); // 鼠标移动的点
-                    //let movePosition = this.viewer.scene.globe.pick(this.viewer.camera.getPickRay(moveEvent.endPosition), this.viewer.scene);
+                    // let movePosition = this.viewer.scene.pickPosition(moveEvent.endPosition); // 鼠标移动的点
+                    let movePosition = globe.pick(camera.getPickRay(moveEvent.endPosition), scene);
                     if (!movePosition) {
                         return false
                     }
@@ -490,7 +497,7 @@ export class S_Measure {
                 backgroundColor: new Cesium.Color(0.165, 0.165, 0.165, 0.8), // 背景颜色
                 backgroundPadding: new Cesium.Cartesian2(6, 6), //指定以像素为单位的水平和垂直背景填充padding
                 pixelOffset: new Cesium.Cartesian2(0, 0),
-                disableDepthTestDistance: Number.POSITIVE_INFINITY
+                // disableDepthTestDistance: Number.POSITIVE_INFINITY
             }
         }));
     };
@@ -514,7 +521,6 @@ export class S_Measure {
                 fillColor: Cesium.Color.WHITE,
                 showBackground: false, //指定标签后面背景的可见性
                 pixelOffset: new Cesium.Cartesian2(30, -20),
-                disableDepthTestDistance: Number.POSITIVE_INFINITY
             }
         }));
     }

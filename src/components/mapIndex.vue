@@ -415,7 +415,7 @@ export default {
           position: Cesium.Cartesian3.fromDegrees(island.position[0], island.position[1]),
           label: {
             font: "12px Helvetica",
-            text: island.name,
+            text: island.name
           },
         });
       })
@@ -520,8 +520,9 @@ export default {
       }
       this.tableDatas.some(boats => {
         if (data.id == boats.id) {
+          const length = boats.points.length;
           boats.points.some((boat, index) => {
-            if (index < length - 1) {
+            if (index == length - 1) {
               return true;
             }
             let entity = this.viewer.entities.getById(data.id + "-" + index);

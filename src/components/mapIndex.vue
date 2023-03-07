@@ -151,15 +151,15 @@ export default {
 
     })
     this.init();
-    this.addIsland();
-    this.addBoats();
-    // const dataSourcePromise = this.viewer.dataSources.add(
-    //     Cesium.CzmlDataSource.load("./data/simple.czml")
-    // );
-    // let self = this;
-    // dataSourcePromise.then(re => {
-    //   self.sersorDemo(self.viewer.dataSources.get(0).entities.getById("Sensor") , 10);
-    // })
+    // this.addIsland();
+    // this.addBoats();
+    const dataSourcePromise = this.viewer.dataSources.add(
+        Cesium.CzmlDataSource.load("./data/simple.czml")
+    );
+    let self = this;
+    dataSourcePromise.then(re => {
+      self.sersorDemo(self.viewer.dataSources.get(0).entities.getById("Sensor") , 30);
+    })
     // setTimeout(function (){
     //   self.sersorDemo(self.viewer.dataSources.get(0).entities.getById("SensorTT") , 10);
     // }, 10000)

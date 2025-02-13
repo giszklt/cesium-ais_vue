@@ -1,0 +1,195 @@
+{
+  "accessors": [
+    {
+      "bufferView": 0,
+      "componentType": 5126,
+      "count": 56297,
+      "max": [
+        79.13298034667969,
+        59.447940826416016,
+        2.3622047901153564
+      ],
+      "min": [
+        -79.13298034667969,
+        -11.22046947479248,
+        -15.543745994567871
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 0,
+      "byteOffset": 12,
+      "componentType": 5126,
+      "count": 56297,
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 1,
+      "componentType": 5125,
+      "count": 168960,
+      "type": "SCALAR"
+    },
+    {
+      "bufferView": 0,
+      "byteOffset": 1801504,
+      "componentType": 5126,
+      "count": 33683,
+      "max": [
+        74.62992095947266,
+        56.429161071777344,
+        11.336503028869629
+      ],
+      "min": [
+        -74.62992095947266,
+        3.4181082248687744,
+        0.27838850021362305
+      ],
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 0,
+      "byteOffset": 1801516,
+      "componentType": 5126,
+      "count": 33683,
+      "type": "VEC3"
+    },
+    {
+      "bufferView": 1,
+      "byteOffset": 675840,
+      "componentType": 5125,
+      "count": 111738,
+      "type": "SCALAR"
+    }
+  ],
+  "asset": {
+    "version": "2.0"
+  },
+  "bufferViews": [
+    {
+      "buffer": 0,
+      "byteLength": 2879360,
+      "byteStride": 32,
+      "target": 34962,
+      "byteOffset": 0
+    },
+    {
+      "buffer": 0,
+      "byteLength": 1122792,
+      "byteOffset": 2879360,
+      "target": 34963
+    }
+  ],
+  "buffers": [
+    {
+      "uri": "12222_data.bin",
+      "byteLength": 4002152
+    }
+  ],
+  "materials": [
+    {
+      "name": "Material__27",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.11764699965715408,
+          0.19607800245285034,
+          0,
+          1
+        ],
+        "metallicFactor": 0,
+        "roughnessFactor": 0
+      }
+    },
+    {
+      "name": "white_soft_touch_plastic",
+      "pbrMetallicRoughness": {
+        "baseColorFactor": [
+          0.527059018611908,
+          0.527059018611908,
+          0,
+          1
+        ],
+        "metallicFactor": 0,
+        "roughnessFactor": 0
+      }
+    }
+  ],
+  "meshes": [
+    {
+      "name": "Mirror8",
+      "primitives": [
+        {
+          "attributes": {
+            "NORMAL": 1,
+            "POSITION": 0
+          },
+          "indices": 2,
+          "material": 0,
+          "mode": 4
+        },
+        {
+          "attributes": {
+            "NORMAL": 4,
+            "POSITION": 3
+          },
+          "indices": 5,
+          "material": 1,
+          "mode": 4
+        }
+      ]
+    }
+  ],
+  "nodes": [
+    {
+      "matrix": [
+        0.0254,
+        0,
+        0,
+        0,
+        0,
+        0.0254,
+        0,
+        0,
+        0,
+        0,
+        0.0254,
+        0,
+        0,
+        0,
+        0,
+        1
+      ],
+      "mesh": 0,
+      "name": "Mirror8"
+    },
+    {
+      "children": [
+        0
+      ],
+      "matrix": [
+        0.999963641166687,
+        -0.005265369545668364,
+        0.00670752488076687,
+        0,
+        0.005206494592130186,
+        0.9999480247497559,
+        0.008764868602156639,
+        0,
+        -0.0067533268593251705,
+        -0.00872962735593319,
+        0.9999391436576845,
+        0,
+        -0.0035491860687732694,
+        -0.6663620391845703,
+        -0.5645146705627441,
+        1
+      ]
+    }
+  ],
+  "scenes": [
+    {
+      "nodes": [
+        1
+      ]
+    }
+  ]
+}

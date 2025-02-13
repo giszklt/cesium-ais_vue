@@ -1,6 +1,15 @@
 <template>
 	<div class="main">
 		<div id="cesiumContainer"></div>
+		<div class="btn-panel_red">
+			<el-button @click="ch">一键筹划</el-button>
+			<el-button @click="fazx">方案执行</el-button>
+			<el-button @click="kszx">开始执行</el-button>
+		</div>
+		<div class="btn-panel_blue">
+			<el-button @click="kstx">蓝方开始通讯</el-button>
+			<el-button @click="xggl">修改蓝方功率</el-button>
+		</div>
 		<div class="location">
 			<p>
 				经度
@@ -19,9 +28,7 @@
 </template>
 
 <script>
-import Bubble from "@/util/bubble";
-import DragEntity from "@/util/dragEntity";
-import {explotEffect} from "@/util/explotEffect";
+import mapUtils from '@/util/index'
 
 let viewer = null;
 export default {
@@ -67,6 +74,7 @@ export default {
 
 	mounted() {
 		this.init();
+		this.loadSatelliteAndStation()
 
 	},
 	methods: {
@@ -115,34 +123,81 @@ export default {
 			viewer.scene.debugShowFramesPerSecond = true;
 			viewer.scene.postProcessStages.fxaa.enabled = true;
 			window.viewer = viewer
-			const modelMatrix = Cesium.Transforms.eastNorthUpToFixedFrame(
-					Cesium.Cartesian3.fromDegrees(-103.0, 40.0)
-			);
-			const modelMatrix1 = Cesium.Transforms.eastNorthUpToFixedFrame(
-					Cesium.Cartesian3.fromDegrees(-104.0, 40.0)
-			);
-			const model = viewer.scene.primitives.add(Cesium.Model.fromGltf({//Gltf和glb模型都用fromGltf
-						url: 'models/111.glb',
-						modelMatrix: modelMatrix,
-						minimumPixelSize: 512,
-						maximumScale: 200000,
-						scale: 20000,
-					})
-			);
-			const model2 = viewer.scene.primitives.add(Cesium.Model.fromGltf({//Gltf和glb模型都用fromGltf
-						url: 'models/12222.glb',
-						modelMatrix: modelMatrix1,
-						minimumPixelSize: 512,
-						maximumScale: 200000,
-						scale: 20000,
-					})
-			);
-			const e = new explotEffect(viewer, {
-				lon: 104, lat: 31, alt: 1000, time: Cesium.JulianDate.fromDate(new Date())
+			mapUtils.polylineMaterial()
+		},
+		loadSatelliteAndStation() {
+			const satellites = [
+				{
+					lon: 104,
+					lat: 30,
+				},
+				{
+					lon: 116,
+					lat: 39.9,
+				}
+			];
+			const stations = [
+				{
+					lon: 108.945602,
+					lat: 34.34153,
+				},
+				{
+					lon: 121.529353,
+					lat: 31.234079,
+				}
+			]
+			satellites.forEach((satellite, index) => {
+				viewer.entities.add({
+					id: 'satellite' + index,
+					position: Cesium.Cartesian3.fromDegrees(satellite.lon, satellite.lat, 36000000),
+					label: {
+						text: "高轨wx" + index,
+						font: '16px SimHei '
+					},
+					model: {
+						uri: 'models/wx.gltf',
+						scale: 1000
+					}
+				})
 			})
-			return;
-
-		}
+			stations.forEach((station, index) => {
+				viewer.entities.add({
+					id: 'station' + index,
+					position: Cesium.Cartesian3.fromDegrees(station.lon, station.lat),
+					label: {
+						text: "地面站" + index,
+						font: '16px SimHei '
+					},
+					model: {
+						uri: 'models/dish.glb',
+						scale: 500
+					}
+				})
+			})
+		},
+		ch() {
+		},
+		fazx() {
+			const red = viewer.entities.getById("satellite1")
+			const blue = viewer.entities.getById("satellite0")
+			const bs = mapUtils.drawCone(viewer,  blue,red,'r1', true, null)
+			// viewer.clock.onTick.addEventListener(function(clock) {
+			// 	const time = clock.currentTime;
+			// 	const heading = Cesium.Math.toRadians(time.secondsOfDay % 360); // 随时间变化的偏航角
+			// 	bs.orientation = new Cesium.HeadingPitchRoll(heading, 0, 0)
+			// });
+		},
+		kszx() {
+		},
+		kstx() {
+			const blue = viewer.entities.getById("satellite0")
+			const s1 = viewer.entities.getById("station0")
+			const s2 = viewer.entities.getById("station1")
+			mapUtils.lineEntity(viewer, 'b1', s1, blue, true, null, null, 'blue')
+			mapUtils.lineEntity(viewer, 'b2', blue, s2, true, null, null, 'blue')
+		},
+		xggl() {
+		},
 	}
 }
 </script>
@@ -153,6 +208,23 @@ export default {
 	height: 100%;
 	width: 100%;
 
+	[class^="btn-panel"] {
+		position: absolute;
+		display: flex;
+		flex-direction: column;
+
+		.el-button {
+			margin: 5px;
+		}
+	}
+
+	.btn-panel_red {
+		left: 0;
+	}
+
+	.btn-panel_blue {
+		right: 0;
+	}
 
 	.location {
 		position: absolute;

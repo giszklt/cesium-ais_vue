@@ -7,7 +7,7 @@
 			<el-button @click="kszx">开始执行</el-button>
 		</div>
 		<div class="btn-panel_blue">
-			<el-button @click="kstx">蓝方开始通讯</el-button>
+			<el-button @click="kstx('blue')">蓝方开始通讯</el-button>
 			<el-button @click="xggl">修改蓝方功率</el-button>
 		</div>
 		<div class="location">
@@ -156,7 +156,7 @@ export default {
 					},
 					model: {
 						uri: 'models/wx.gltf',
-						scale: 1000
+						scale: 100000
 					}
 				})
 			})
@@ -181,6 +181,7 @@ export default {
 			const red = viewer.entities.getById("satellite1")
 			const blue = viewer.entities.getById("satellite0")
 			const bs = mapUtils.drawCone(viewer,  blue,red,'r1', true, null)
+      this.kstx('red')
 			// viewer.clock.onTick.addEventListener(function(clock) {
 			// 	const time = clock.currentTime;
 			// 	const heading = Cesium.Math.toRadians(time.secondsOfDay % 360); // 随时间变化的偏航角
@@ -189,14 +190,15 @@ export default {
 		},
 		kszx() {
 		},
-		kstx() {
+		kstx(color) {
 			const blue = viewer.entities.getById("satellite0")
 			const s1 = viewer.entities.getById("station0")
 			const s2 = viewer.entities.getById("station1")
-			mapUtils.lineEntity(viewer, 'b1', s1, blue, true, null, null, 'blue')
-			mapUtils.lineEntity(viewer, 'b2', blue, s2, true, null, null, 'blue')
+			mapUtils.lineEntity(viewer, 'b1', s1, blue, true, null, null, color)
+			mapUtils.lineEntity(viewer, 'b2', blue, s2, true, null, null, color)
 		},
 		xggl() {
+      this.kstx('blue')
 		},
 	}
 }

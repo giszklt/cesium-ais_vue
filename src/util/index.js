@@ -683,7 +683,7 @@ let utils = {
 		}
 		// debugger
 		if (viewer.entities.getById(lineId)) {
-			return
+			viewer.entities.removeById(lineId)
 		}
 
 		material = colorType == 'red' ? new Cesium.PolylineTrailLinkRedMaterialProperty(Cesium.Color.RED, 700) : new Cesium.PolylineTrailLinkGreenMaterialProperty(Cesium.Color.GREEN, 700);
@@ -937,7 +937,7 @@ let utils = {
 			cylinder: {
 				length: length,
 				topRadius: 0,
-				bottomRadius: 100000,//幅宽
+				bottomRadius: 500000,//幅宽
 				material: Cesium.Color.RED.withAlpha(0.4),
 				outline: !0,
 				numberOfVerticalLines: 0,

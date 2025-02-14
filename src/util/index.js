@@ -1,4 +1,5 @@
-import de from "element-ui/src/locale/lang/de";
+import '@/util/CylinderBlurMaterialProperty'
+import '@/util/CylinderReverseBlurMaterialProperty'
 
 let utils = {
 	earthRotate: null,
@@ -896,9 +897,9 @@ let utils = {
 		// 归一化
 		const normal = Cesium.Cartesian3.normalize(vector2, new Cesium.Cartesian3())
 		const rotationMatrix3 = Cesium.Transforms.rotationMatrixFromPositionVelocity(pointA, normal, Cesium.Ellipsoid.WGS84)
-		return Cesium.Matrix4.fromRotationTranslation(rotationMatrix3, pointB)
+		return Cesium.Matrix4.fromRotationTranslation(rotationMatrix3, pointA)
 	},
-	drawCone: function (viewer, entity, satellite1, id, showEntity, time) {
+	drawCone: function (viewer, entity, satellite, id, showEntity, time, reverse=false) {
 		let TimeInterval = null
 		if (time) {
 			TimeInterval = new Cesium.TimeIntervalCollection([
@@ -909,15 +910,14 @@ let utils = {
 			])
 		}
 		let position = new Cesium.CallbackProperty(function (time, result) {
-			if (entity.position.getValue(time) && satellite1.position.getValue(time)) {
-				return Cesium.Cartesian3.midpoint(entity.position.getValue(time), satellite1.position.getValue(time), new Cesium.Cartesian3())
+			if (entity.position.getValue(time) && satellite.position.getValue(time)) {
+				return Cesium.Cartesian3.midpoint(entity.position.getValue(time), satellite.position.getValue(time), new Cesium.Cartesian3())
 
 			}
 		}, false);
 		let length = new Cesium.CallbackProperty(function (time, result) {
-			if (entity.position.getValue(time) && satellite1.position.getValue(time)) {
-				return Cesium.Cartesian3.distance(entity.position.getValue(time), satellite1.position.getValue(time))
-
+			if (entity.position.getValue(time) && satellite.position.getValue(time)) {
+				return Cesium.Cartesian3.distance(entity.position.getValue(time), satellite.position.getValue(time))
 			}
 		}, false);
 		const self = this
@@ -926,11 +926,11 @@ let utils = {
 			position: position,
 			id: id,
 			orientation: new Cesium.CallbackProperty((time, result) => {
-				if (entity.position.getValue(time) && satellite1.position.getValue(time)) {
-					const m = self.getModelMatrix(entity.position.getValue(time), satellite1.position.getValue(time))
+				if (entity.position.getValue(time) && satellite.position.getValue(time)) {
+					const m = self.getModelMatrix(entity.position.getValue(time), satellite.position.getValue(time))
 					const hpr = self.getHeadingPitchRoll(m)
-					hpr.pitch = hpr.pitch + 3.14 / 2 + 3.14
-					return Cesium.Transforms.headingPitchRollQuaternion(satellite1.position.getValue(time), hpr)
+					hpr.pitch = hpr.pitch + Math.PI * (3.1 / 2)
+					return Cesium.Transforms.headingPitchRollQuaternion(satellite.position.getValue(time), hpr)
 				}
 			}, false),
 			availability: TimeInterval,
@@ -938,7 +938,19 @@ let utils = {
 				length: length,
 				topRadius: 0,
 				bottomRadius: 500000,//幅宽
-				material: Cesium.Color.RED.withAlpha(0.4),
+				material: reverse ? new Cesium.CylinderReverseBlurMaterialProperty({
+					color: Cesium.Color.RED.withAlpha(0.4),
+					offset: 10,
+					speed: 10,
+					repeat: 100,
+					thickness: 0.2
+				})  : new Cesium.CylinderBlurMaterialProperty({
+					color: Cesium.Color.RED.withAlpha(0.4),
+					offset: 10,
+					speed: 10,
+					repeat: 100,
+					thickness: 0.2
+				}),
 				outline: !0,
 				numberOfVerticalLines: 0,
 				outlineColor: Cesium.Color.RED.withAlpha(0.4)

@@ -199,18 +199,18 @@ export default {
 		},
 		fazx() {
 			const red = viewer.entities.getById("satellite1")
+			const s1 = viewer.entities.getById("station0")
+			const s2 = viewer.entities.getById("station1")
+			mapUtils.drawCone(viewer, s1, red, 'r2', true, null, true)
+			mapUtils.drawCone(viewer, s2, red, 'r3', true, null, true)
+		},
+		kszx() {
+			const red = viewer.entities.getById("satellite1")
 			const blue = viewer.entities.getById("satellite0")
-			const bs = mapUtils.drawCone(viewer, blue, red, 'r1', true, null)
+			mapUtils.drawCone(viewer, blue, red, 'r1', true, null)
 			if (viewer.entities.getById("b1")) {
 				this.kstx('red', 2000)
 			}
-			// viewer.clock.onTick.addEventListener(function(clock) {
-			// 	const time = clock.currentTime;
-			// 	const heading = Cesium.Math.toRadians(time.secondsOfDay % 360); // 随时间变化的偏航角
-			// 	bs.orientation = new Cesium.HeadingPitchRoll(heading, 0, 0)
-			// });
-		},
-		kszx() {
 		},
 		kstx(color, speed) {
 			const blue = viewer.entities.getById("satellite0")

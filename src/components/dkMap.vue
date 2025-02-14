@@ -7,7 +7,7 @@
 			<el-button @click="kszx">开始执行</el-button>
 		</div>
 		<div class="btn-panel_blue">
-			<el-button @click="kstx('blue')">蓝方开始通讯</el-button>
+			<el-button @click="kstx('blue', 2000)">蓝方开始通讯</el-button>
 			<el-button @click="xggl">修改蓝方功率</el-button>
 		</div>
 		<div class="location">
@@ -124,6 +124,26 @@ export default {
 			viewer.scene.postProcessStages.fxaa.enabled = true;
 			window.viewer = viewer
 			mapUtils.polylineMaterial()
+			viewer.camera.setView({
+				destination: Cesium.Cartesian3.fromDegrees(126.46287620036766, 33.391048927138144, 69008687.22604062), // 目标位置（经度、纬度、高度）
+				orientation: {
+					heading: Cesium.Math.toRadians(10.07054865076313), // 偏航角（绕 Z 轴旋转）
+					pitch: Cesium.Math.toRadians(-89.7684105105433), // 俯仰角（绕 Y 轴旋转）
+					roll: 0                            // 翻滚角（绕 X 轴旋转）
+				}
+			});
+
+			// viewer.camera.changed.addEventListener(function() {
+			// 	const position = viewer.camera.position;
+			// 	const cartographic = Cesium.Cartographic.fromCartesian(position);
+			// 	const heading = viewer.camera.heading; // 偏航角（弧度）
+			// 	const pitch = viewer.camera.pitch;     // 俯仰角（弧度）
+			// 	const roll = viewer.camera.roll;       // 翻滚角（弧度）
+			// 	console.log(`偏航角: ${Cesium.Math.toDegrees(heading)}°, 俯仰角: ${Cesium.Math.toDegrees(pitch)}°, 翻滚角: ${Cesium.Math.toDegrees(roll)}°`);
+			// 	console.log(`相机位置: 经度: ${Cesium.Math.toDegrees(cartographic.longitude)}, 纬度: ${Cesium.Math.toDegrees(cartographic.latitude)}, 高度: ${cartographic.height}`);
+			// });
+
+
 		},
 		loadSatelliteAndStation() {
 			const satellites = [
@@ -180,8 +200,10 @@ export default {
 		fazx() {
 			const red = viewer.entities.getById("satellite1")
 			const blue = viewer.entities.getById("satellite0")
-			const bs = mapUtils.drawCone(viewer,  blue,red,'r1', true, null)
-      this.kstx('red')
+			const bs = mapUtils.drawCone(viewer, blue, red, 'r1', true, null)
+			if (viewer.entities.getById("b1")) {
+				this.kstx('red', 2000)
+			}
 			// viewer.clock.onTick.addEventListener(function(clock) {
 			// 	const time = clock.currentTime;
 			// 	const heading = Cesium.Math.toRadians(time.secondsOfDay % 360); // 随时间变化的偏航角
@@ -190,15 +212,15 @@ export default {
 		},
 		kszx() {
 		},
-		kstx(color) {
+		kstx(color, speed) {
 			const blue = viewer.entities.getById("satellite0")
 			const s1 = viewer.entities.getById("station0")
 			const s2 = viewer.entities.getById("station1")
-			mapUtils.lineEntity(viewer, 'b1', s1, blue, true, null, null, color)
-			mapUtils.lineEntity(viewer, 'b2', blue, s2, true, null, null, color)
+			mapUtils.lineEntity(viewer, 'b1', s1, blue, true, null, null, color, speed)
+			mapUtils.lineEntity(viewer, 'b2', blue, s2, true, null, null, color, speed)
 		},
 		xggl() {
-      this.kstx('blue')
+			this.kstx('blue', 500)
 		},
 	}
 }

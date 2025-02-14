@@ -665,7 +665,7 @@ let utils = {
 		}
 	},
 	// 流动线条连接两实体
-	lineEntity: function (viewer, lineId, entity1, entity2, showEntity, times, material, colorType) {
+	lineEntity: function (viewer, lineId, entity1, entity2, showEntity, times, material, colorType, speed) {
 		// let lineEntuty = this.getObjById(lineId, viewer)
 		// if (lineEntuty) {
 		//     return
@@ -686,7 +686,7 @@ let utils = {
 			viewer.entities.removeById(lineId)
 		}
 
-		material = colorType == 'red' ? new Cesium.PolylineTrailLinkRedMaterialProperty(Cesium.Color.RED, 700) : new Cesium.PolylineTrailLinkGreenMaterialProperty(Cesium.Color.GREEN, 700);
+		material = colorType == 'red' ? new Cesium.PolylineTrailLinkRedMaterialProperty(Cesium.Color.RED, speed) : new Cesium.PolylineTrailLinkGreenMaterialProperty(Cesium.Color.GREEN, 700);
 
 
 		let entity = viewer.entities.add({

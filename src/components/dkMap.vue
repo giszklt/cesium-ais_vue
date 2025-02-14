@@ -216,6 +216,8 @@ export default {
 			const blue = viewer.entities.getById("satellite0")
 			const s1 = viewer.entities.getById("station0")
 			const s2 = viewer.entities.getById("station1")
+      viewer.entities.removeById('r2')
+      viewer.entities.removeById('r3')
 			mapUtils.lineEntity(viewer, 'b1', s1, blue, true, null, null, color, speed)
 			mapUtils.lineEntity(viewer, 'b2', blue, s2, true, null, null, color, speed)
 		},
